@@ -39,11 +39,13 @@ public class LogInDialog extends JDialog{
 		
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
 				ipAdress = ip.getText();
 				userName = user.getText();
 				password = pass.getText();
 				controller.addCredentials(ipAdress,userName,password);
 				controller.runTerminalLogIn();
+				
 			}
 			
 		});

@@ -10,9 +10,11 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import Controller.Controller;
+
 
 public class MainFrame extends JFrame {
 	private JButton okBtn;
@@ -20,6 +22,7 @@ public class MainFrame extends JFrame {
 	private TextPanel textPanel;
 	private LogInDialog logInDialog;
 	private IpInfoDialog ipInfoDialog;
+	private portAndLocalIpDialog portandLocalIpDialog;
 	private Controller controller;
 
 	public MainFrame() {
@@ -30,7 +33,7 @@ public class MainFrame extends JFrame {
 		logInDialog = new LogInDialog(this);
 		ipInfoDialog = new IpInfoDialog(this);
 		controller = new Controller();
-		
+		portandLocalIpDialog = new portAndLocalIpDialog(this);
 		ipInfoDialog.setListListener(new ListListener() {
 			@Override
 			public void ListEventOccured(List<String> list) {
@@ -39,8 +42,8 @@ public class MainFrame extends JFrame {
 				for(int i =0;i<count;i++) {
 					textPanel.appendText(i+": " + list.get(i) + "\n");
 				}
+				controller.saveSquidList(list);
 				controller.ipAssignmentScript(list);
-				
 			}
 			
 		});
@@ -87,6 +90,15 @@ public class MainFrame extends JFrame {
 		});
 		
 		JMenuItem squidConfigure = new JMenuItem("Convert VPS to SQUID");
+		squidConfigure.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				portandLocalIpDialog.setList(controller.getSquidList());
+				portandLocalIpDialog.setVisible(true);
+				
+			}
+			
+		});
+		
 		
 		config.add(ipInstall);
 		config.add(squidConfigure);
