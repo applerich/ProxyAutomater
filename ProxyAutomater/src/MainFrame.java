@@ -47,6 +47,28 @@ public class MainFrame extends JFrame {
 			}
 			
 		});
+		logInDialog.setLogInListener(new LogInListener() {
+			public void LogInEventOccured(List<String> loginList) {
+				controller.saveCredentialList(loginList);
+				
+			}
+		});
+		portandLocalIpDialog.setPortandLocalIpListener(new PortandLocalIpListener() {
+			public void PortEventOccured(List<String> list) {
+			List<String> listOfIps = controller.getList2();
+			controller.squidAssignmentScript(list.get(0), list.get(1), listOfIps);
+			}
+		});
+		okBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("credentials: " + controller.getCredentials());
+				System.out.println("getAssignmentScript" + controller.getAssignmentScript());
+				System.out.println(controller.getSquidScript());
+				
+				
+			}
+			
+		});
 		
 		setGridBagLayout();
 		setJMenuBar(createMenuBar());

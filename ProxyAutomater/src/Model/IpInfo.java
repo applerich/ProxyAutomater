@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class IpInfo {
 	List<String >listOfIps = new ArrayList<String>();
+	ScriptStorage scriptStorage = new ScriptStorage();
 	
 	public IpInfo() {
 		listOfIps = new ArrayList<String>();
@@ -33,28 +34,26 @@ public class IpInfo {
 
 	public void ipAssignmentScript(List<String> list) {
 		int i =1;
+		String finalCompiled = "";
 		for(String ip:list) {
 			String firstLine = "auto " + "eth0:" + i+ "\n";
 			String secondLine = "iface " + "eth0:"+ i + " inet static"+ "\n";
 			String thirdLine = "address " + ip + "\n";
 			String lastLine = "netmask " + "255.255.255.255" + "\n";
 			String compiled = firstLine + secondLine + thirdLine + lastLine;
+			finalCompiled = finalCompiled + compiled;
 			i++;
-			System.out.println(compiled);
-			
-		}		
+		}
+		scriptStorage.saveAssignmentScript(finalCompiled);
 	}
 
 	public void squidAssignmentScript(String port, String ip2, List<String> list) {
+		String collated = "";
 		String portLine = "http_port " + port + "\n";
 		String aclLine = "acl localnet src " + ip2 + "\n";
 		String allowLine = "http_access allow localhost" + "\n";
 		String allowLine2 = "http_access allow localnet" + "\n";
-		String introLine = portLine + aclLine + allowLine + allowLine2;
-		System.out.println(introLine);
-		
-		
-		
+		String introLine = portLine + aclLine + allowLine + allowLine2 +"\n";
 		
 		for(String ip: list) {
 			String dotIp = ip;
@@ -62,11 +61,12 @@ public class IpInfo {
 			String myIpName = "my_ip_" + underScoreIp;
 			String firstLine = "acl " + myIpName + " myip " + dotIp + "\n";
 			String secondLine = "tcp_outgoing_address " + dotIp + " " + myIpName+ "\n";
-			String blankLine = " ";
+			String blankLine = " " + "\n";
 			String tcpLine = firstLine + secondLine + blankLine;
-			System.out.println(tcpLine);
+			collated = collated+ tcpLine;
 		}
-		
+		String squidScript = introLine + collated;
+		scriptStorage.saveSquidScript(squidScript);
 		
 	}
 
@@ -78,5 +78,23 @@ public class IpInfo {
 	public void saveList(List<String> list) {
 		listOfIps = list;
 		
+	}
+
+	public void addLogInDetails(String ipAdress, String userName, String password) {
+		scriptStorage.addLogInDetails(ipAdress,userName,password);
+	}
+
+	public List<String> getCredentials() {
+		return scriptStorage.getCredentials();
+	}
+
+	public String getSquidScript() {
+		
+		return scriptStorage.getSquidScript();
+		
+	}
+
+	public String getAssignmentScript() {
+		return scriptStorage.getAssignmentScript();
 	}
 }

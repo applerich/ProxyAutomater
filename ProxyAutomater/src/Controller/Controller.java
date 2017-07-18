@@ -26,7 +26,7 @@ public class Controller {
 		String ipAdress = credentialInfo.getIpAdress();
 		String userName = credentialInfo.getUserName();
 		String password = credentialInfo.getPassword();
-		//run terminal and log in//
+		ipInfo.addLogInDetails(ipAdress,userName,password);
 		
 	}
 	public void addIpText(String text) {
@@ -39,7 +39,11 @@ public class Controller {
 	}
 	public void ipAssignmentScript(List<String> list) {
 		ipInfo.ipAssignmentScript(list);
+		this.listToBeAppended = list;
 		
+	}
+	public List<String> getList2() {
+		return listToBeAppended;
 	}
 	public void squidAssignmentScript(String port, String ip, List<String> squidIPs) {
 		ipInfo.squidAssignmentScript(port,ip,squidIPs);
@@ -59,6 +63,21 @@ public class Controller {
 	}
 	public List<String> getSquidList() {
 		return portAndLocalInfo.getList();
+	}
+	public List<String> getCredentials() {
+		return credentialInfo.getCredentials();
+		
+		
+	}
+	public void saveCredentialList(List<String> loginList) {
+		credentialInfo.saveCredentials(loginList);
+		
+	}
+	public String getAssignmentScript() {
+		return ipInfo.getAssignmentScript();
+	}
+	public String getSquidScript() {
+		return ipInfo.getSquidScript();
 	}
 	
 

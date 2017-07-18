@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -24,20 +25,28 @@ public class portAndLocalIpDialog extends JDialog {
 	private JButton cancelBtn;
 	private Controller controller;
 	private List<String> list;
+	private List<String> portandLocalIpList;
+	private PortandLocalIpListener listen;
 		public portAndLocalIpDialog(JFrame parent) {
 			super(parent,"Input your port and Machine IP",null);
 			portField = new JTextField(15);
 			localIpField = new JTextField(15);
 			okBtn = new JButton("OK");
 			controller = new Controller();
+			portandLocalIpList = new ArrayList<String>();
 			okBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String port = portField.getText();
 					String ip = localIpField.getText();
+					portandLocalIpList.add(port);
+					portandLocalIpList.add(ip);
 					if(list == null) {
 						JOptionPane.showMessageDialog(portAndLocalIpDialog.this, "You did not set any IPs in the VPS!", "NO IPs", JOptionPane.ERROR_MESSAGE);
 					} else {
 						controller.squidAssignmentScript(port,ip,list);
+					}
+					if(listen != null) {
+						listen.PortEventOccured(portandLocalIpList);
 					}
 				}	
 			});
@@ -98,5 +107,9 @@ public class portAndLocalIpDialog extends JDialog {
 		}
 		public void setList(List<String> squidList) {
 			this.list = squidList;
+		}
+		public void setPortandLocalIpListener(PortandLocalIpListener portandLocalIpListener) {
+			this.listen = portandLocalIpListener;
+			
 		}
 }

@@ -1,9 +1,13 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CredentialInfo {
 	private String ipAdress;
 	private String userName;
 	private String password;
+	private List<String> list;
 	
 	
 	public void add(String ipAdress, String userName, String password) {
@@ -41,6 +45,17 @@ public class CredentialInfo {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+
+	public List<String> getCredentials() {
+		return list;
+	}
+
+
+	public void saveCredentials(List<String> loginList) {
+		this.list = loginList;
+		
 	}
 
 }

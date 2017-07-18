@@ -6,7 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -27,6 +28,7 @@ public class LogInDialog extends JDialog{
 	private String userName;
 	private String password;
 	private Controller controller;
+	private LogInListener logInListener;
 	
 	public LogInDialog(JFrame parent) {
 		super(parent,"Log In Credentials",false);
@@ -39,12 +41,18 @@ public class LogInDialog extends JDialog{
 		
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+				
 				ipAdress = ip.getText();
 				userName = user.getText();
 				password = pass.getText();
-				controller.addCredentials(ipAdress,userName,password);
-				controller.runTerminalLogIn();
+				if(logInListener != null) {
+					List<String> list = new ArrayList<String>();
+					list.add(ipAdress);
+					list.add(userName);
+					list.add(password);
+					logInListener.LogInEventOccured(list);
+				}
+				
 				
 			}
 			
@@ -122,6 +130,11 @@ public class LogInDialog extends JDialog{
 		this.setLayout(new BorderLayout());
 		this.add(credentialPanel,BorderLayout.CENTER);
 		this.add(buttonPanel,BorderLayout.SOUTH);
+		
+	}
+
+	public void setLogInListener(LogInListener logInListener) {
+		this.logInListener = logInListener;
 		
 	}
 }
