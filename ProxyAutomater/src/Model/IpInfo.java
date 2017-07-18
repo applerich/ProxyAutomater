@@ -40,7 +40,7 @@ public class IpInfo {
 			String secondLine = "iface " + "eth0:"+ i + " inet static"+ "\n";
 			String thirdLine = "address " + ip + "\n";
 			String lastLine = "netmask " + "255.255.255.255" + "\n";
-			String compiled = firstLine + secondLine + thirdLine + lastLine;
+			String compiled = firstLine + secondLine + thirdLine + lastLine + "\n";
 			finalCompiled = finalCompiled + compiled;
 			i++;
 		}

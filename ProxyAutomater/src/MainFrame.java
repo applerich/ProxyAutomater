@@ -2,7 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -10,10 +10,12 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.jcraft.jsch.JSchException;
+
 import Controller.Controller;
+import Controller.SSHManager;
 
 
 public class MainFrame extends JFrame {
@@ -50,6 +52,11 @@ public class MainFrame extends JFrame {
 		logInDialog.setLogInListener(new LogInListener() {
 			public void LogInEventOccured(List<String> loginList) {
 				controller.saveCredentialList(loginList);
+				textPanel.appendText("You have set your log in Credentials to be: " + "\n");
+				textPanel.appendText("VPS host ip: " + loginList.get(0) + "\n");
+				textPanel.appendText("username: " + loginList.get(1) + "\n");
+				textPanel.appendText("password: " + loginList.get(2) + "\n");
+				
 				
 			}
 		});
@@ -61,10 +68,67 @@ public class MainFrame extends JFrame {
 		});
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("credentials: " + controller.getCredentials());
-				System.out.println("getAssignmentScript" + controller.getAssignmentScript());
-				System.out.println(controller.getSquidScript());
+				textPanel.appendText(" " + "\n");
+				textPanel.appendText("Generate button clicked!" + "\n");
+				List<String> credentials = controller.getCredentials();
+				String assignmentScript = controller.getAssignmentScript();
+				String squidScript = controller.getSquidScript();
+				String connectionIP = credentials.get(0);
+				String userName = credentials.get(1);
+				String password = credentials.get(2);
+				textPanel.appendText("Attempting log in with credentials given...");
+				SSHManager instance = new SSHManager(userName, password, connectionIP, "");
+				String errorMessage = instance.connect();
+				if(errorMessage != null)
+			     {
+			        System.out.println(errorMessage);
+			        textPanel.appendText("Error logging in!, try again!");
+			        instance.close();
+			     }
+				instance.sendCommand("set -v");
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				textPanel.appendText("Installing nano text editor...."+ "\n");
+				instance.sendCommand("apt-get install -y nano");
+				textPanel.appendText("Nano text editor installed!" + "\n");
+				textPanel.appendText("\n");
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				textPanel.appendText("Updating debian 8 utilities..." + "\n");
+				instance.sendCommand("apt-get -y update");
+				textPanel.appendText("Debian utilities updated!" + "\n");
+				textPanel.appendText("\n");
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				textPanel.appendText("Installing ntpdate" + "\n");
+				instance.sendCommand("apt-get install -y ntpdate");
+				textPanel.appendText("ntpdate installed!" + "\n");
+				textPanel.appendText("\n");
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				textPanel.appendText("Installing squid3" + "\n");
+				instance.sendCommand("apt-get install -y squid3 apache2-utils");
+				textPanel.appendText("squid3 installed!" + "\n");
+				textPanel.appendText("\n");
 				
+				
+				instance.close();
 				
 			}
 			

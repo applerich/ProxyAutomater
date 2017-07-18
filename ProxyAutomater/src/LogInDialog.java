@@ -51,6 +51,7 @@ public class LogInDialog extends JDialog{
 					list.add(userName);
 					list.add(password);
 					logInListener.LogInEventOccured(list);
+					setVisible(false);
 				}
 				
 				

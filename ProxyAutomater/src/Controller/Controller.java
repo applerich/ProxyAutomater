@@ -1,7 +1,12 @@
 package Controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jcraft.jsch.JSchException;
 
 import Model.CredentialInfo;
 import Model.IpInfo;
@@ -12,6 +17,7 @@ public class Controller {
 	private IpInfo ipInfo;
 	private PortAndLocalInfo portAndLocalInfo;
 	private List<String> listToBeAppended;
+	private Exception exception;
 	public Controller() {
 		credentialInfo = new CredentialInfo();
 		ipInfo = new IpInfo();
@@ -79,6 +85,5 @@ public class Controller {
 	public String getSquidScript() {
 		return ipInfo.getSquidScript();
 	}
-	
-
+		
 }
