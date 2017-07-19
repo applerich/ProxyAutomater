@@ -6,11 +6,19 @@
   */
   package Controller;
 
-  import com.jcraft.jsch.*;
-  import java.io.IOException;
-  import java.io.InputStream;
-  import java.util.logging.Level;
-  import java.util.logging.Logger;
+  import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 
   public class SSHManager
   {
@@ -153,4 +161,29 @@
      sesConnection.disconnect();
   }
 
+  public void pasteText(String assignmentScript, String fileDirectory, String fileName) {
+	  try {
+		  //file directory is /etc/squid3 file name is squid.conf
+		Channel channel = sesConnection.openChannel("sftp");
+		channel.connect();
+		ChannelSftp channelSFTP = (ChannelSftp) channel;
+		channelSFTP.cd(fileDirectory);
+		InputStream channelInputStream = new ByteArrayInputStream(assignmentScript.getBytes());
+		channelSFTP.put(channelInputStream,fileDirectory+fileName);
+		channelSFTP.exit();
+		channelInputStream.close();
+		channel.disconnect();
+		
+	} catch (JSchException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (SftpException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  
+  }
   }

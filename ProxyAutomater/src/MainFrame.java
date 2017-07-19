@@ -2,7 +2,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -11,8 +10,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-
-import com.jcraft.jsch.JSchException;
 
 import Controller.Controller;
 import Controller.SSHManager;
@@ -86,49 +83,44 @@ public class MainFrame extends JFrame {
 			        instance.close();
 			     }
 				instance.sendCommand("set -v");
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				textPanel.appendText("Installing nano text editor...."+ "\n");
 				instance.sendCommand("apt-get install -y nano");
 				textPanel.appendText("Nano text editor installed!" + "\n");
 				textPanel.appendText("\n");
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				
 				textPanel.appendText("Updating debian 8 utilities..." + "\n");
 				instance.sendCommand("apt-get -y update");
 				textPanel.appendText("Debian utilities updated!" + "\n");
 				textPanel.appendText("\n");
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				
 				textPanel.appendText("Installing ntpdate" + "\n");
 				instance.sendCommand("apt-get install -y ntpdate");
 				textPanel.appendText("ntpdate installed!" + "\n");
 				textPanel.appendText("\n");
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				
 				textPanel.appendText("Installing squid3" + "\n");
 				instance.sendCommand("apt-get install -y squid3 apache2-utils");
 				textPanel.appendText("squid3 installed!" + "\n");
 				textPanel.appendText("\n");
+			
+				textPanel.appendText("Pulling assignment script.... and assigning to network interfaces" + "\n");
+				instance.sendCommand("> /etc/network/interfaces");
+				instance.pasteText(assignmentScript,"/etc/network/", "interfaces");
+				textPanel.appendText("Announcement of ip's a sucess!" + "\n");
+				textPanel.appendText("\n");
 				
+				textPanel.appendText("Pulling squid script... and assigning to squid.conf" + "\n");
+				instance.sendCommand("> /etc/squid3/squid.conf");
+				instance.pasteText(squidScript, "/etc/squid3/","squid.conf");
+				textPanel.appendText("Assignment to squid.conf sucess!" + "\n");
+				textPanel.appendText("\n");
+		
+				instance.sendCommand("service squid3 restart");
 				
+				//instance.sendCommand("service squid3 restart");
 				instance.close();
+				
+				
 				
 			}
 			
