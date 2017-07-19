@@ -53,6 +53,12 @@ public class portAndLocalIpDialog extends JDialog {
 			});
 
 			cancelBtn = new JButton("Cancel");
+			cancelBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					setVisible(false);
+				}
+				
+			});
 			layoutComponents();
 			setSize(300,200);
 		}

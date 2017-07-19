@@ -1,16 +1,14 @@
 package Controller;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.jcraft.jsch.JSchException;
 
 import Model.CredentialInfo;
 import Model.IpInfo;
 import Model.PortAndLocalInfo;
+import Model.TestScript;
 
 public class Controller {
 	private CredentialInfo credentialInfo;
@@ -18,11 +16,13 @@ public class Controller {
 	private PortAndLocalInfo portAndLocalInfo;
 	private List<String> listToBeAppended;
 	private Exception exception;
+	private TestScript testScript;
 	public Controller() {
 		credentialInfo = new CredentialInfo();
 		ipInfo = new IpInfo();
 		listToBeAppended = new ArrayList<String>();
 		portAndLocalInfo = new PortAndLocalInfo();
+		testScript = new TestScript();
 	}
 	public void addCredentials(String ipAdress, String userName, String password) {
 		credentialInfo.add(ipAdress,userName,password);
@@ -84,6 +84,23 @@ public class Controller {
 	}
 	public String getSquidScript() {
 		return ipInfo.getSquidScript();
+	}
+	public void savePort(String string) {
+		portAndLocalInfo.savePort(string);
+	}
+	public String getPort() {
+		return portAndLocalInfo.getPort();
+	}
+	public void testIps(String chunkofIps) {
+		try {
+			testScript.testIps(chunkofIps);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 		
 }

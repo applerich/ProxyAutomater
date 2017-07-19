@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import Controller.Controller;
@@ -23,16 +24,23 @@ public class MainFrame extends JFrame {
 	private IpInfoDialog ipInfoDialog;
 	private portAndLocalIpDialog portandLocalIpDialog;
 	private Controller controller;
+	private JButton listBtn;
+	private JButton proxyBtn;
+	private ProxyTestDialog proxyTestDialog;
 
 	public MainFrame() {
 		super("ProxyAutomater Tool");
 		okBtn = new JButton("Generate");
 		cancelBtn = new JButton("Quit");
+		listBtn = new JButton("List of Proxies");
+		proxyBtn = new JButton("Test my proxies");
 		textPanel = new TextPanel();
 		logInDialog = new LogInDialog(this);
 		ipInfoDialog = new IpInfoDialog(this);
 		controller = new Controller();
 		portandLocalIpDialog = new portAndLocalIpDialog(this);
+		proxyTestDialog = new ProxyTestDialog(this);
+		
 		ipInfoDialog.setListListener(new ListListener() {
 			@Override
 			public void ListEventOccured(List<String> list) {
@@ -43,6 +51,7 @@ public class MainFrame extends JFrame {
 				}
 				controller.saveSquidList(list);
 				controller.ipAssignmentScript(list);
+				//the list here is a list of all IPs to be converted to squid
 			}
 			
 		});
@@ -61,6 +70,7 @@ public class MainFrame extends JFrame {
 			public void PortEventOccured(List<String> list) {
 			List<String> listOfIps = controller.getList2();
 			controller.squidAssignmentScript(list.get(0), list.get(1), listOfIps);
+			controller.savePort(list.get(0));
 			}
 		});
 		okBtn.addActionListener(new ActionListener() {
@@ -122,6 +132,31 @@ public class MainFrame extends JFrame {
 				
 				
 				
+			}
+			
+		});
+		
+		listBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<String> listofIps = controller.getSquidList();
+				String toBePrinted = "";
+				for(String ip : listofIps) {
+					toBePrinted = toBePrinted + ip + ":" + controller.getPort() + "\n";
+				} if(controller.getPort() == null) {
+					JOptionPane.showMessageDialog(MainFrame.this, "You did not input a port in squid config!", "No port", JOptionPane.OK_OPTION);
+				} else {
+					textPanel.appendText("Obtaining list of proxies..." + "\n");
+					textPanel.appendText(toBePrinted);
+					textPanel.appendText("You can press the text button to test these proxies!");
+				}
+				
+			}
+			
+		});
+		
+		proxyBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				proxyTestDialog.setVisible(true);
 			}
 			
 		});
@@ -194,7 +229,10 @@ public class MainFrame extends JFrame {
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.add(okBtn);
+		buttonPanel.add(listBtn);
+		buttonPanel.add(proxyBtn);
 		buttonPanel.add(cancelBtn);
+		
 		
 		this.setLayout(new BorderLayout());
 		add(textAreaPanel,BorderLayout.CENTER);
