@@ -48,6 +48,7 @@ public class portAndLocalIpDialog extends JDialog {
 					if(listen != null) {
 						listen.PortEventOccured(portandLocalIpList);
 					}
+					setVisible(false);
 				}	
 			});
 
