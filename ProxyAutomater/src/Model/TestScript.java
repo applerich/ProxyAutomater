@@ -18,7 +18,7 @@ import java.util.Scanner;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpHost;
-
+// still in testing//
 public class TestScript {
 	
 
@@ -39,7 +39,7 @@ public class TestScript {
 			System.out.println("Testing if "+ipToBeTested2 +" is live");
 			testConnection(ipToBeTested2);
 			
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ipToBeTested2, 80));
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ipToBeTested2, Integer.parseInt(portToBeTested)));
 			URLConnection conn = new URL("https://google.com").openConnection(proxy);
 			System.out.println(((HttpURLConnection) conn).usingProxy());
 		}

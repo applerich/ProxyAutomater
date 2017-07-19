@@ -140,14 +140,16 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				List<String> listofIps = controller.getSquidList();
 				String toBePrinted = "";
+				System.out.println(listofIps);
 				for(String ip : listofIps) {
 					toBePrinted = toBePrinted + ip + ":" + controller.getPort() + "\n";
 				} if(controller.getPort() == null) {
 					JOptionPane.showMessageDialog(MainFrame.this, "You did not input a port in squid config!", "No port", JOptionPane.OK_OPTION);
 				} else {
-					textPanel.appendText("Obtaining list of proxies..." + "\n");
-					textPanel.appendText(toBePrinted);
-					textPanel.appendText("You can press the text button to test these proxies!");
+					textPanel.appendText("\n" + "Obtaining list of proxies..." + "\n");
+					textPanel.appendText("Here is the generated list of proxies" + "\n");
+					textPanel.appendText(toBePrinted + "\n");
+					textPanel.appendText("You can press the text button to test these proxies!" +"\n");
 				}
 				
 			}
