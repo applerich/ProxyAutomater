@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public class IpInfo {
 	List<String >listOfIps = new ArrayList<String>();
 	ScriptStorage scriptStorage = new ScriptStorage();
 	
 	public IpInfo() {
-		listOfIps = new ArrayList<String>();
 	}
 
 	public void addIpText(String text) {
@@ -19,11 +20,16 @@ public class IpInfo {
 	}
 
 	private void stringToList(String text) {
+		listOfIps.clear();
 		Scanner scanner = new Scanner(text);
 		while(scanner.hasNextLine()) {
 			String line = scanner.nextLine();
 			listOfIps.add(line);
 		}
+		if(listOfIps.size() > 3) { //for beta test//
+			listOfIps.clear();
+		}
+		System.out.println(listOfIps);
 		
 	}
 

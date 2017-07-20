@@ -45,13 +45,19 @@ public class MainFrame extends JFrame {
 			@Override
 			public void ListEventOccured(List<String> list) {
 				int count = list.size();
-				textPanel.appendText("These IP's will be assigned to your VPS(THEY ARE NOT YET SQUID READY" + "\n");
-				for(int i =0;i<count;i++) {
-					textPanel.appendText(i+": " + list.get(i) + "\n");
+				if(count > 3 || count ==0 ) { //for beta test only//
+					JOptionPane.showMessageDialog(MainFrame.this, "Beta test only allows 3 or less IPS", "Excess IPS", JOptionPane.OK_OPTION);
+				} else {
+					textPanel.appendText("These IP's will be assigned to your VPS(THEY ARE NOT YET SQUID READY" + "\n");
+					for(int i =0;i<count;i++) {
+						textPanel.appendText(i+": " + list.get(i) + "\n");
+					}
+					controller.saveSquidList(list);
+					controller.ipAssignmentScript(list);
+					ipInfoDialog.setVisible(false);
+					//the list here is a list of all IPs to be converted to squid
 				}
-				controller.saveSquidList(list);
-				controller.ipAssignmentScript(list);
-				//the list here is a list of all IPs to be converted to squid
+				
 			}
 			
 		});
@@ -73,62 +79,74 @@ public class MainFrame extends JFrame {
 			controller.savePort(list.get(0));
 			}
 		});
+		
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textPanel.appendText(" " + "\n");
 				textPanel.appendText("Generate button clicked!" + "\n");
 				List<String> credentials = controller.getCredentials();
+				if(credentials == null) {
+					JOptionPane.showMessageDialog(MainFrame.this, "No log in input!", "No Log in Info", JOptionPane.OK_OPTION);
+				}
 				String assignmentScript = controller.getAssignmentScript();
 				String squidScript = controller.getSquidScript();
-				String connectionIP = credentials.get(0);
-				String userName = credentials.get(1);
-				String password = credentials.get(2);
-				textPanel.appendText("Attempting log in with credentials given...");
-				SSHManager instance = new SSHManager(userName, password, connectionIP, "");
-				String errorMessage = instance.connect();
-				if(errorMessage != null)
-			     {
-			        System.out.println(errorMessage);
-			        textPanel.appendText("Error logging in!, try again!");
-			        instance.close();
-			     }
-				instance.sendCommand("set -v");
-				textPanel.appendText("Installing nano text editor...."+ "\n");
-				instance.sendCommand("apt-get install -y nano");
-				textPanel.appendText("Nano text editor installed!" + "\n");
-				textPanel.appendText("\n");
+				if(assignmentScript == null || squidScript == null) {
+					JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP", JOptionPane.OK_OPTION);
+				} else {
+					
+					String connectionIP = credentials.get(0);
+					String userName = credentials.get(1);
+					String password = credentials.get(2);
+					textPanel.appendText("Attempting log in with credentials given...");
+					SSHManager instance = new SSHManager(userName, password, connectionIP, "");
+					String errorMessage = instance.connect();
+					if(errorMessage != null)
+				     {
+				        System.out.println(errorMessage);
+				        textPanel.appendText("Error logging in!, try again!" + "\n");
+				        instance.close();
+				     } else {
+				    	 instance.sendCommand("set -v");
+							textPanel.appendText("Installing nano text editor...."+ "\n");
+							instance.sendCommand("apt-get install -y nano");
+							textPanel.appendText("Nano text editor installed!" + "\n");
+							textPanel.appendText("\n");
+							
+							textPanel.appendText("Updating debian 8 utilities..." + "\n");
+							instance.sendCommand("apt-get -y update");
+							textPanel.appendText("Debian utilities updated!" + "\n");
+							textPanel.appendText("\n");
+							
+							textPanel.appendText("Installing ntpdate" + "\n");
+							instance.sendCommand("apt-get install -y ntpdate");
+							textPanel.appendText("ntpdate installed!" + "\n");
+							textPanel.appendText("\n");
+							
+							textPanel.appendText("Installing squid3" + "\n");
+							instance.sendCommand("apt-get install -y squid3 apache2-utils");
+							textPanel.appendText("squid3 installed!" + "\n");
+							textPanel.appendText("\n");
+						
+							textPanel.appendText("Pulling assignment script.... and assigning to network interfaces" + "\n");
+							instance.sendCommand("> /etc/network/interfaces");
+							instance.pasteText(assignmentScript,"/etc/network/", "interfaces"); //orginally assignment script
+							textPanel.appendText("Announcement of ip's a sucess!" + "\n");
+							textPanel.appendText("\n");
+							
+							textPanel.appendText("Pulling squid script... and assigning to squid.conf" + "\n");
+							instance.sendCommand("> /etc/squid3/squid.conf");
+							instance.pasteText(squidScript, "/etc/squid3/","squid.conf"); //originally squidScript
+							textPanel.appendText("Assignment to squid.conf sucess!" + "\n");
+							textPanel.appendText("\n");
+					
+							instance.sendCommand("service squid3 restart");
+							instance.close();
+				     }
+					
+				}
 				
-				textPanel.appendText("Updating debian 8 utilities..." + "\n");
-				instance.sendCommand("apt-get -y update");
-				textPanel.appendText("Debian utilities updated!" + "\n");
-				textPanel.appendText("\n");
 				
-				textPanel.appendText("Installing ntpdate" + "\n");
-				instance.sendCommand("apt-get install -y ntpdate");
-				textPanel.appendText("ntpdate installed!" + "\n");
-				textPanel.appendText("\n");
 				
-				textPanel.appendText("Installing squid3" + "\n");
-				instance.sendCommand("apt-get install -y squid3 apache2-utils");
-				textPanel.appendText("squid3 installed!" + "\n");
-				textPanel.appendText("\n");
-			
-				textPanel.appendText("Pulling assignment script.... and assigning to network interfaces" + "\n");
-				instance.sendCommand("> /etc/network/interfaces");
-				instance.pasteText(assignmentScript,"/etc/network/", "interfaces");
-				textPanel.appendText("Announcement of ip's a sucess!" + "\n");
-				textPanel.appendText("\n");
-				
-				textPanel.appendText("Pulling squid script... and assigning to squid.conf" + "\n");
-				instance.sendCommand("> /etc/squid3/squid.conf");
-				instance.pasteText(squidScript, "/etc/squid3/","squid.conf");
-				textPanel.appendText("Assignment to squid.conf sucess!" + "\n");
-				textPanel.appendText("\n");
-		
-				instance.sendCommand("service squid3 restart");
-				
-				//instance.sendCommand("service squid3 restart");
-				instance.close();
 				
 				
 				

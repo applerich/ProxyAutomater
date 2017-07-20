@@ -32,7 +32,6 @@ public class IpInfoDialog extends JDialog {
 				if(listener != null) {
 					listener.ListEventOccured(controller.appendTextwithIPs());
 				}
-				setVisible(false);
 			}
 			
 		});
