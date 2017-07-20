@@ -73,10 +73,16 @@ public class MainFrame extends JFrame {
 			}
 		});
 		portandLocalIpDialog.setPortandLocalIpListener(new PortandLocalIpListener() {
-			public void PortEventOccured(List<String> list) {
+			public void PortEventOccured(List<String> list,List<String> additionalIps) {
 			List<String> listOfIps = controller.getList2();
-			controller.squidAssignmentScript(list.get(0), list.get(1), listOfIps);
-			controller.savePort(list.get(0));
+			if(additionalIps.size() == 0) {
+				controller.squidAssignmentScript(list.get(0), list.get(1), listOfIps);
+				controller.savePort(list.get(0));
+			} else {
+				controller.squidAssignmentScript2(list.get(0), list.get(1), listOfIps,additionalIps);
+				controller.savePort(list.get(0));
+			}
+ 			
 			}
 		});
 		
@@ -90,9 +96,10 @@ public class MainFrame extends JFrame {
 				}
 				String assignmentScript = controller.getAssignmentScript();
 				String squidScript = controller.getSquidScript();
+				System.out.println(squidScript);
 				if(assignmentScript == null || squidScript == null) {
 					JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP", JOptionPane.OK_OPTION);
-				} else {
+				} /*else {
 					
 					String connectionIP = credentials.get(0);
 					String userName = credentials.get(1);
@@ -141,9 +148,9 @@ public class MainFrame extends JFrame {
 					
 							instance.sendCommand("service squid3 restart");
 							instance.close();
-				     }
+				     } 
 					
-				}
+				}*/
 				
 				
 				

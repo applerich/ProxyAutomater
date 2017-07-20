@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,27 +27,38 @@ public class portAndLocalIpDialog extends JDialog {
 	private Controller controller;
 	private List<String> list;
 	private List<String> portandLocalIpList;
+	private JCheckBox multipleIpBox;
+	private IpWhiteListDialog ipWhiteListDialog;
 	private PortandLocalIpListener listen;
 		public portAndLocalIpDialog(JFrame parent) {
-			super(parent,"Input your port and Machine IP",null);
+			super(parent,"Input your LOCAL MACHINE IP and PORT",null);
 			portField = new JTextField(15);
 			localIpField = new JTextField(15);
 			okBtn = new JButton("OK");
 			controller = new Controller();
 			portandLocalIpList = new ArrayList<String>();
+			multipleIpBox = new JCheckBox();
+			ipWhiteListDialog = new IpWhiteListDialog(parent);
 			okBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					portandLocalIpList.clear();
 					String port = portField.getText();
 					String ip = localIpField.getText();
+					List<String> additionalIp = ipWhiteListDialog.geAdditionalIps();
 					portandLocalIpList.add(port);
 					portandLocalIpList.add(ip);
+					System.out.println("additionalIp is " + additionalIp);
+					
 					if(list == null) {
 						JOptionPane.showMessageDialog(portAndLocalIpDialog.this, "You did not set any IPs in the VPS!", "NO IPs", JOptionPane.ERROR_MESSAGE);
-					} else {
+					} else if(additionalIp.size() == 0) {
 						controller.squidAssignmentScript(port,ip,list);
+					} else {
+						controller.squidAssignmentScript2(port,ip,list,additionalIp);
 					}
+					
 					if(listen != null) {
-						listen.PortEventOccured(portandLocalIpList);
+						listen.PortEventOccured(portandLocalIpList,additionalIp);
 					}
 					setVisible(false);
 				}	
@@ -56,6 +68,12 @@ public class portAndLocalIpDialog extends JDialog {
 			cancelBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					setVisible(false);
+				}
+				
+			});
+			multipleIpBox.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ipWhiteListDialog.setVisible(true);
 				}
 				
 			});
@@ -94,6 +112,18 @@ public class portAndLocalIpDialog extends JDialog {
 			gc.fill = GridBagConstraints.HORIZONTAL;
 			gc.insets = new Insets(0,0,0,5);
 			fieldPanel.add(portField,gc);
+			
+			gc.gridx = 0;
+			gc.gridy++;
+			gc.anchor = GridBagConstraints.FIRST_LINE_END;
+			gc.fill = GridBagConstraints.NONE;
+			
+			gc.insets = new Insets(5,0,0,5);
+			fieldPanel.add(new JLabel("Multiple IPs?"), gc);
+			gc.gridx++;
+			gc.fill = GridBagConstraints.HORIZONTAL;
+			gc.insets = new Insets(0,0,0,5);
+			fieldPanel.add(multipleIpBox,gc);
 			
 			
 			//for buttonPanel//

@@ -102,5 +102,17 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+	public void addAuthIps(String additionalIpBlock) {
+		ipInfo.addAuthIps(additionalIpBlock);
+		
+	}
+	public List<String> getAuthIps() {
+		return ipInfo.getAuthIps();
+	}
+	public void squidAssignmentScript2(String port, String ip, List<String> list, List<String> additionalIp) {
+		ipInfo.squidAssignmentScript2(port,ip,list,additionalIp);
+		
+	}
+	
 		
 }
