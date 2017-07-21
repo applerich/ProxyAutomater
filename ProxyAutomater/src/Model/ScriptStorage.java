@@ -10,6 +10,7 @@ public class ScriptStorage {
 	private String compile;
 	private String assignmentScript;
 	private String squidScript;
+	private List<String> userAndPass;
 	public String getUserName() {
 		return userName;
 	}
@@ -67,4 +68,13 @@ public class ScriptStorage {
 	public String getSquidScript() {
 		return squidScript;
 	}
+	public void saveUserandPass(String userName2, String password2) {
+		userAndPass = new ArrayList<String>();
+		userAndPass.add(userName2);
+		userAndPass.add(password2);
+	}
+	public List<String> getUserandPass() {
+		return userAndPass;
+	}
+	
 }

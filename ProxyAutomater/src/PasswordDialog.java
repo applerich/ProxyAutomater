@@ -18,55 +18,30 @@ import javax.swing.JTextField;
 
 import Controller.Controller;
 
-public class LogInDialog extends JDialog{
+public class PasswordDialog extends JDialog{
 	private JTextField user;
 	private JTextField pass;
-	private JTextField gateway;
-	private JTextField netmask;
 	private JButton okBtn;
 	private JButton cancelBtn;
-	private JTextField ip;
-	private String ipAdress;
 	private String userName;
 	private String password;
-	private String gatewaytext;
-	private String netmasktext;
 	private Controller controller;
-	private LogInListener logInListener;
+	private PasswordListener listen;
 	
-	public LogInDialog(JFrame parent) {
-		super(parent,"Log In Credentials",false);
+	public PasswordDialog(JFrame parent) {
+		super(parent,"Password authentication",false);
 		user = new JTextField(15);
 		pass = new JTextField(15);
-		gateway = new JTextField(15);
-		netmask = new JTextField(15);
-		ip = new JTextField(15);
 		okBtn = new JButton("Log In");
 		cancelBtn = new JButton("Cancel");
 		controller = new Controller();
 		
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				ipAdress = ip.getText();
 				userName = user.getText();
 				password = pass.getText();
-				gatewaytext = gateway.getText();
-				netmasktext = netmask.getText();
-				
-				
-				if(logInListener != null) {
-					List<String> list = new ArrayList<String>();
-					list.add(ipAdress);
-					list.add(userName);
-					list.add(password);
-					list.add(gatewaytext);
-					list.add(netmasktext);
-					logInListener.LogInEventOccured(list);
-					setVisible(false);
-				}
-				
-				
+				controller.addUserandPass(userName, password);
+				setVisible(false);
 			}
 			
 		});
@@ -79,7 +54,7 @@ public class LogInDialog extends JDialog{
 		
 		LayoutControls();
 		setMinimumSize(new Dimension(350,180));
-		setSize(350,200);
+		setSize(350,180);
 		
 	}
 
@@ -99,12 +74,12 @@ public class LogInDialog extends JDialog{
 		gc.anchor = GridBagConstraints.FIRST_LINE_END;
 		gc.fill = GridBagConstraints.NONE;
 		gc.insets = new Insets (5,0,0,5);
-		credentialPanel.add(new JLabel("IP:"),gc);
+		credentialPanel.add(new JLabel("User:"),gc);
 		
 		gc.gridx++;
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		gc.insets = new Insets(0,0,0,5);
-		credentialPanel.add(ip,gc);
+		credentialPanel.add(user,gc);
 		
 		gc.gridx = 0;
 		gc.gridy++;
@@ -112,50 +87,12 @@ public class LogInDialog extends JDialog{
 		gc.fill = GridBagConstraints.NONE;
 		
 		gc.insets = new Insets(5,0,0,5);
-		credentialPanel.add(new JLabel("User:"), gc);
+		credentialPanel.add(new JLabel("Password:"), gc);
 		gc.gridx++;
 		gc.fill = GridBagConstraints.HORIZONTAL;
 		gc.insets = new Insets(0,0,0,5);
-		credentialPanel.add(user,gc);
+		credentialPanel.add(pass, gc);
 		
-		gc.gridx=0;
-		gc.gridy++;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
-		gc.fill = GridBagConstraints.NONE;
-		gc.insets = new Insets(5,0,0,5);
-		credentialPanel.add(new JLabel("Password:"),gc);
-		
-		
-		gc.gridx++;
-		gc.fill = GridBagConstraints.HORIZONTAL;
-		gc.insets = new Insets(0,0,0,5);
-		credentialPanel.add(pass,gc);
-		
-		gc.gridx=0;
-		gc.gridy++;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
-		gc.fill = GridBagConstraints.NONE;
-		gc.insets = new Insets(5,0,0,5);
-		credentialPanel.add(new JLabel("Gateway:"),gc);
-		
-		
-		gc.gridx++;
-		gc.fill = GridBagConstraints.HORIZONTAL;
-		gc.insets = new Insets(0,0,0,5);
-		credentialPanel.add(gateway,gc);
-		
-		gc.gridx=0;
-		gc.gridy++;
-		gc.anchor = GridBagConstraints.FIRST_LINE_END;
-		gc.fill = GridBagConstraints.NONE;
-		gc.insets = new Insets(5,0,0,5);
-		credentialPanel.add(new JLabel("Netmask:"),gc);
-		
-		
-		gc.gridx++;
-		gc.fill = GridBagConstraints.HORIZONTAL;
-		gc.insets = new Insets(0,0,0,5);
-		credentialPanel.add(netmask,gc);
 		
 		
 		//for buttonPanel//
@@ -172,8 +109,14 @@ public class LogInDialog extends JDialog{
 		
 	}
 
-	public void setLogInListener(LogInListener logInListener) {
-		this.logInListener = logInListener;
+	public void setPasswordListener(PasswordListener passwordListener) {
+		this.listen = passwordListener;
 		
 	}
+
+	public List<String> getUserAndPass() {
+		return controller.getUserandPass();
+		
+	}
+
 }

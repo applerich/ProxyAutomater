@@ -43,8 +43,8 @@ public class Controller {
 		return ipInfo.getList();
 		
 	}
-	public void ipAssignmentScript(List<String> list) {
-		ipInfo.ipAssignmentScript(list);
+	public void ipAssignmentScript(List<String> list, String initialIp, String gateway, String netmask) {
+		ipInfo.ipAssignmentScript(list,initialIp,gateway,netmask);
 		this.listToBeAppended = list;
 		
 	}
@@ -112,6 +112,25 @@ public class Controller {
 	public void squidAssignmentScript2(String port, String ip, List<String> list, List<String> additionalIp) {
 		ipInfo.squidAssignmentScript2(port,ip,list,additionalIp);
 		
+	}
+	public void addUserandPass(String userName, String password) {
+		ipInfo.addUserandPass(userName,password);
+		
+	}
+	public List<String> getUserandPass() {
+		return ipInfo.getUserandPass();
+		
+	}
+	public void squidAssignmentScript3(String port,List<String> list) {
+		ipInfo.squidAssignmentScript3(port,list);
+		
+	}
+	public void saveAuthUserPass(List<String> authUserAndPass) {
+		ipInfo.saveAuthUserPass(authUserAndPass);
+		
+	}
+	public List<String> getAuthUserPass() {
+		return ipInfo.getAuthUserPass();
 	}
 	
 		
