@@ -1,8 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class TextPanel extends JPanel{
@@ -12,7 +12,7 @@ public class TextPanel extends JPanel{
 		textArea = new JTextArea();
 		setLayout(new BorderLayout());
 		setMinimumSize(new Dimension(300,300));
-		add(textArea,BorderLayout.CENTER);
+		add(new JScrollPane(textArea),BorderLayout.CENTER);
 	}
 
 	public void appendText(String text) {
