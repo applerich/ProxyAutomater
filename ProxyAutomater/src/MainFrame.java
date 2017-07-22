@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +14,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import Controller.Controller;
-import Controller.SSHManager;
 
 public class MainFrame extends JFrame {
 	private JButton okBtn;
@@ -27,6 +27,10 @@ public class MainFrame extends JFrame {
 	private JButton proxyBtn;
 	private ProxyTestDialog proxyTestDialog;
 	private PasswordDialog passwordDialog;
+	private JSchGenerator jSchGenerator;
+	private HostOptionDialog hostOptionDialog;
+	private JButton hostChoose;
+	
 
 	public MainFrame() {
 		super("ProxyAutomater Tool");
@@ -41,6 +45,9 @@ public class MainFrame extends JFrame {
 		portandLocalIpDialog = new portAndLocalIpDialog(this);
 		proxyTestDialog = new ProxyTestDialog(this);
 		passwordDialog = new PasswordDialog(this);
+		jSchGenerator = new JSchGenerator();
+		hostOptionDialog = new HostOptionDialog(this);
+		hostChoose = new JButton("Select Host");
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
@@ -125,194 +132,155 @@ public class MainFrame extends JFrame {
 		});
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textPanel.appendText(" " + "\n");
-				textPanel.appendText("Generate button clicked!" + "\n");
+				if(hostOptionDialog.getSelection() == null) {
+					textPanel.appendText("\n");
+					textPanel.appendText("No host selected will use default" + "\n");
+					textPanel.appendText("\n");
+					/*try {
+					Thread.sleep(100000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				List<String> credentials = controller.getCredentials();
-
-				if (credentials == null) { // no user auth
+				if (credentials == null) { // no user log in
 					JOptionPane.showMessageDialog(MainFrame.this, "No log in input!", "No Log in Info",
 							JOptionPane.OK_OPTION);
 				}
 				String assignmentScript = controller.getAssignmentScript();
 				String squidScript = controller.getSquidScript();
 				List<String> authUserAndPass = controller.getUserandPass();
-				System.out.println(squidScript);
-				if (authUserAndPass.size() == 0) {
+
+				if (authUserAndPass.size() == 0) { // no auth
 					if (assignmentScript == null || squidScript == null) {
 						JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
 								JOptionPane.OK_OPTION);
-					} else {
-
-						String connectionIP = credentials.get(0);
-						String userName = credentials.get(1);
-						String password = credentials.get(2);
-						textPanel.appendText("Attempting log in with credentials given...");
-						SSHManager instance = new SSHManager(userName, password, connectionIP, "");
-						String errorMessage = instance.connect();
-						if (errorMessage != null) {
-							System.out.println(errorMessage);
-							textPanel.appendText("Error logging in!, try again!" + "\n");
-							instance.close();
-						} else {
-							instance.sendCommand("set -v");
-							textPanel.appendText("Installing nano text editor...." + "\n");
-							instance.sendCommand("apt-get install -y nano");
-							textPanel.appendText("Nano text editor installed!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText("Updating debian 8 utilities..." + "\n");
-							instance.sendCommand("apt-get -y update");
-							textPanel.appendText("Debian utilities updated!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText("Installing ntpdate" + "\n");
-							instance.sendCommand("apt-get install -y ntpdate");
-							textPanel.appendText("ntpdate installed!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText("Installing squid3" + "\n");
-							instance.sendCommand("apt-get install -y squid3 apache2-utils");
-							textPanel.appendText("squid3 installed!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText(
-									"Pulling assignment script.... and assigning to network interfaces" + "\n");
-							instance.sendCommand("> /etc/network/interfaces");
-							instance.pasteText(assignmentScript, "/etc/network/", "interfaces");
-
-							textPanel.appendText("Announcement of ip's a sucess!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText("Pulling squid script... and assigning to squid.conf" + "\n");
-							instance.sendCommand("> /etc/squid3/squid.conf");
-							instance.pasteText(squidScript, "/etc/squid3/", "squid.conf");
-
-							textPanel.appendText("Assignment to squid.conf sucess!" + "\n");
-							textPanel.appendText("\n");
-
-							instance.sendCommand("/etc/init.d/networking restart");
-							instance.sendCommand("/etc/init.d/squid3 restart");
-							instance.sendCommand("service squid3 restart");
-							instance.close();
-						}
-
+					} else { // with auth
+						// jSchGenerator.runScriptNoAuth(credentials,
+						// assignmentScript, squidScript);
 					}
+
 				} else if (authUserAndPass.size() != 0) { // with user auth
 					if (assignmentScript == null || squidScript == null) {
 						JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
 								JOptionPane.OK_OPTION);
 					} else {
+						// jSchGenerator.runScriptWithAuth(credentials,
+						// assignmentScript, squidScript, authUserAndPass);
+					}
 
-						String connectionIP = credentials.get(0);
-						String userName = credentials.get(1);
-						String password = credentials.get(2);
-						String authUser = authUserAndPass.get(0);
-						String authPass = authUserAndPass.get(1);
-						System.out.println("authUser is: " + authUser);
-						System.out.println("AuthPass is: " + authPass);
-						textPanel.appendText("Attempting log in with credentials given...");
-						SSHManager instance = new SSHManager(userName, password, connectionIP, "");
-						String errorMessage = instance.connect();
-						if (errorMessage != null) {
-							System.out.println(errorMessage);
-							textPanel.appendText("Error logging in!, try again!" + "\n");
-							instance.close();
-						} else {
-							instance.sendCommand("set -v");
-							textPanel.appendText("Installing nano text editor...." + "\n");
-							instance.sendCommand("apt-get install -y nano");
-							textPanel.appendText("Nano text editor installed!" + "\n");
-							textPanel.appendText("\n");
+				} */
+				} else {
+					String selection = hostOptionDialog.getSelection();
+					if(selection.equals("host1plus")) {
+						textPanel.appendText("creating squid proxies for host1plus");
+						/*try {
+						Thread.sleep(100000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					List<String> credentials = controller.getCredentials();
+					if (credentials == null) { // no user log in
+						JOptionPane.showMessageDialog(MainFrame.this, "No log in input!", "No Log in Info",
+								JOptionPane.OK_OPTION);
+					}
+					String assignmentScript = controller.getAssignmentScript();
+					String squidScript = controller.getSquidScript();
+					List<String> authUserAndPass = controller.getUserandPass();
 
-							textPanel.appendText("Updating debian 8 utilities..." + "\n");
-							instance.sendCommand("apt-get -y update");
-							textPanel.appendText("Debian utilities updated!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText("Installing ntpdate" + "\n");
-							instance.sendCommand("apt-get install -y ntpdate");
-							textPanel.appendText("ntpdate installed!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText("Installing squid3" + "\n");
-							instance.sendCommand("apt-get install -y squid3 apache2-utils");
-							textPanel.appendText("squid3 installed!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText(
-									"Pulling assignment script.... and assigning to network interfaces" + "\n");
-							instance.sendCommand("> /etc/network/interfaces");
-							instance.pasteText(assignmentScript, "/etc/network/", "interfaces");
-
-							textPanel.appendText("Announcement of ip's a sucess!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText("Pulling squid script... and assigning to squid.conf" + "\n");
-							instance.sendCommand("> /etc/squid3/squid.conf");
-							instance.pasteText(squidScript, "/etc/squid3/", "squid.conf");
-							textPanel.appendText("Assignment to squid.conf sucess!" + "\n");
-							textPanel.appendText("\n");
-
-							textPanel.appendText("Assigning passwords and user name..." + "\n");
-							instance.sendCommand("sudo htpasswd -c /etc/squid3/passwords" + authUser);
-							instance.sendCommand(authPass);
-							instance.sendCommand(authPass);
-							instance.sendCommand("/etc/init.d/networking restart");
-							instance.sendCommand("/etc/init.d/squid3 restart");
-							instance.sendCommand("service squid3 restart");
-							instance.close();
+					if (authUserAndPass.size() == 0) { // no auth
+						if (assignmentScript == null || squidScript == null) {
+							JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
+									JOptionPane.OK_OPTION);
+						} else { // with auth
+							// jSchGenerator.runScriptNoAuth(credentials,
+							// assignmentScript, squidScript);
 						}
 
+					} else if (authUserAndPass.size() != 0) { // with user auth
+						if (assignmentScript == null || squidScript == null) {
+							JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
+									JOptionPane.OK_OPTION);
+						} else {
+							// jSchGenerator.runScriptWithAuth(credentials,
+							// assignmentScript, squidScript, authUserAndPass);
+						}
+
+					} */
+					} else if(selection.equals("digitalocean")) {
+						textPanel.appendText("creating squid proxies for digital Ocean");
 					}
 				}
+				
+				
 
+			} 
+
+		});
+		hostChoose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hostOptionDialog.setVisible(true);
+				
+				
 			}
-
+			
+		});
+		hostOptionDialog.setHostListener(new HostListener() {
+			public void hostEventOccured(String host) {
+				textPanel.appendText("You have selected the host to be: " + host + "\n");
+			}
 		});
 
 		listBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<String> listofIps = controller.getSquidList();
 
-				String toBePrinted = "";
-				if (controller.getAuthUserPass().size() == 0) {
-					controller.getAuthUserPass().clear();
-					for (String ip : listofIps) {
-						toBePrinted = toBePrinted + ip + ":" + controller.getPort() + "\n";
-					}
-					if (controller.getPort() == null) {
-						JOptionPane.showMessageDialog(MainFrame.this, "You did not input a port in squid config!",
-								"No port", JOptionPane.OK_OPTION);
-					} else {
-						textPanel.appendText("\n" + "Obtaining list of proxies..." + "\n");
-						textPanel.appendText("Here is the generated list of proxies" + "\n");
-						textPanel.appendText("\n");
-						textPanel.appendText("\n");
-						textPanel.appendText(toBePrinted + "\n");
-						textPanel.appendText("You can press the test button to test these proxies!" + "\n");
-					}
-				}
+				if (controller.getSquidList() == null) {
+					JOptionPane.showMessageDialog(MainFrame.this, "No IP's installed", "No Ips", JOptionPane.OK_OPTION);
+				} else {
+					List<String> listofIps = controller.getSquidList();
 
-				else {
-					String user = controller.getAuthUserPass().get(0);
-					String pass = controller.getAuthUserPass().get(1);
-					if (controller.getPort() == null) {
-						JOptionPane.showMessageDialog(MainFrame.this, "You did not input a port in squid config!",
-								"No port", JOptionPane.OK_OPTION);
-					} else {
-						textPanel.appendText("\n" + "Obtaining list of proxies..." + "\n");
-						textPanel.appendText("Here is the generated list of proxies" + "\n");
-						textPanel.appendText("\n");
-						textPanel.appendText("\n");
+					String toBePrinted = "";
+					if (controller.getAuthUserPass().size() == 0) {
+						controller.getAuthUserPass().clear();
 						for (String ip : listofIps) {
-							toBePrinted = toBePrinted + ip + ":" + controller.getPort() + ":" + user + ":" + pass
-									+ "\n";
+							toBePrinted = toBePrinted + ip + ":" + controller.getPort() + "\n";
 						}
-						textPanel.appendText(toBePrinted + "\n");
-						textPanel.appendText("You can press the test button to test these proxies!" + "\n");
+						if (controller.getPort() == null) {
+							JOptionPane.showMessageDialog(MainFrame.this, "You did not input a port in squid config!",
+									"No port", JOptionPane.OK_OPTION);
+						} else {
+							textPanel.appendText("\n" + "Obtaining list of proxies..." + "\n");
+							textPanel.appendText("Here is the generated list of proxies" + "\n");
+							textPanel.appendText("\n");
+							textPanel.appendText("\n");
+							textPanel.appendText(toBePrinted + "\n");
+							textPanel.appendText("You can press the test button to test these proxies!" + "\n");
+						}
 					}
 
+					else {
+						String user = controller.getAuthUserPass().get(0);
+						String pass = controller.getAuthUserPass().get(1);
+						if (controller.getPort() == null) {
+							JOptionPane.showMessageDialog(MainFrame.this, "You did not input a port in squid config!",
+									"No port", JOptionPane.OK_OPTION);
+						} else {
+							textPanel.appendText("\n" + "Obtaining list of proxies..." + "\n");
+							textPanel.appendText("Here is the generated list of proxies" + "\n");
+							textPanel.appendText("\n");
+							textPanel.appendText("\n");
+							for (String ip : listofIps) {
+								toBePrinted = toBePrinted + ip + ":" + controller.getPort() + ":" + user + ":" + pass
+										+ "\n";
+							}
+							textPanel.appendText(toBePrinted + "\n");
+							textPanel.appendText("You can press the test button to test these proxies!" + "\n");
+						}
+
+					}
 				}
+
 			}
 
 		});
@@ -326,7 +294,8 @@ public class MainFrame extends JFrame {
 
 		setGridBagLayout();
 		setJMenuBar(createMenuBar());
-		setSize(500, 500);
+		setSize(600, 600);
+		setMinimumSize(new Dimension(600,600));
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -399,10 +368,12 @@ public class MainFrame extends JFrame {
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		buttonPanel.add(hostChoose);
 		buttonPanel.add(okBtn);
 		buttonPanel.add(listBtn);
 		buttonPanel.add(proxyBtn);
 		buttonPanel.add(cancelBtn);
+		
 
 		this.setLayout(new BorderLayout());
 		add(textAreaPanel, BorderLayout.CENTER);
