@@ -41,6 +41,12 @@ public class MainFrame extends JFrame {
 		portandLocalIpDialog = new portAndLocalIpDialog(this);
 		proxyTestDialog = new ProxyTestDialog(this);
 		passwordDialog = new PasswordDialog(this);
+		cancelBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+
+		});
 		ipInfoDialog.setListListener(new ListListener() {
 			@Override
 			public void ListEventOccured(List<String> list) {
@@ -123,7 +129,7 @@ public class MainFrame extends JFrame {
 				textPanel.appendText("Generate button clicked!" + "\n");
 				List<String> credentials = controller.getCredentials();
 
-				if (credentials == null) { //no user auth
+				if (credentials == null) { // no user auth
 					JOptionPane.showMessageDialog(MainFrame.this, "No log in input!", "No Log in Info",
 							JOptionPane.OK_OPTION);
 				}
@@ -191,7 +197,7 @@ public class MainFrame extends JFrame {
 						}
 
 					}
-				} else if (authUserAndPass.size() != 0) { //with user auth
+				} else if (authUserAndPass.size() != 0) { // with user auth
 					if (assignmentScript == null || squidScript == null) {
 						JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
 								JOptionPane.OK_OPTION);
@@ -203,7 +209,7 @@ public class MainFrame extends JFrame {
 						String authUser = authUserAndPass.get(0);
 						String authPass = authUserAndPass.get(1);
 						System.out.println("authUser is: " + authUser);
-						System.out.println("AuthPass is: " +authPass);
+						System.out.println("AuthPass is: " + authPass);
 						textPanel.appendText("Attempting log in with credentials given...");
 						SSHManager instance = new SSHManager(userName, password, connectionIP, "");
 						String errorMessage = instance.connect();
@@ -267,11 +273,10 @@ public class MainFrame extends JFrame {
 		listBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				List<String> listofIps = controller.getSquidList();
-				
-				
+
 				String toBePrinted = "";
-				if (controller.getAuthUserPass().get(0) == null || controller.getAuthUserPass().get(1) == null) {
-					controller.getAuthUserPass().clear();   
+				if (controller.getAuthUserPass().size() == 0) {
+					controller.getAuthUserPass().clear();
 					for (String ip : listofIps) {
 						toBePrinted = toBePrinted + ip + ":" + controller.getPort() + "\n";
 					}
@@ -284,26 +289,11 @@ public class MainFrame extends JFrame {
 						textPanel.appendText("\n");
 						textPanel.appendText("\n");
 						textPanel.appendText(toBePrinted + "\n");
-						textPanel.appendText("You can press the text button to test these proxies!" + "\n");
-					}									
+						textPanel.appendText("You can press the test button to test these proxies!" + "\n");
+					}
 				}
-				System.out.println("test safety" + controller.getAuthUserPass());
-				if (controller.getAuthUserPass().size() == 0) { // no userAndPassAuth
-					for (String ip : listofIps) {
-						toBePrinted = toBePrinted + ip + ":" + controller.getPort() + "\n";
-					}
-					if (controller.getPort() == null) {
-						JOptionPane.showMessageDialog(MainFrame.this, "You did not input a port in squid config!",
-								"No port", JOptionPane.OK_OPTION);
-					} else {
-						textPanel.appendText("\n" + "Obtaining list of proxies..." + "\n");
-						textPanel.appendText("Here is the generated list of proxies" + "\n");
-						textPanel.appendText("\n");
-						textPanel.appendText("\n");
-						textPanel.appendText(toBePrinted + "\n");
-						textPanel.appendText("You can press the text button to test these proxies!" + "\n");
-					}
-				} else {
+
+				else {
 					String user = controller.getAuthUserPass().get(0);
 					String pass = controller.getAuthUserPass().get(1);
 					if (controller.getPort() == null) {
@@ -315,10 +305,11 @@ public class MainFrame extends JFrame {
 						textPanel.appendText("\n");
 						textPanel.appendText("\n");
 						for (String ip : listofIps) {
-							toBePrinted = toBePrinted + ip + ":" + controller.getPort() + ":" +user +":" +pass+ "\n";
+							toBePrinted = toBePrinted + ip + ":" + controller.getPort() + ":" + user + ":" + pass
+									+ "\n";
 						}
 						textPanel.appendText(toBePrinted + "\n");
-						textPanel.appendText("You can press the text button to test these proxies!" + "\n");
+						textPanel.appendText("You can press the test button to test these proxies!" + "\n");
 					}
 
 				}
@@ -368,7 +359,17 @@ public class MainFrame extends JFrame {
 
 		ipInstall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ipInfoDialog.setVisible(true);
+				if (controller.getCredentials() == null) {
+					JOptionPane.showMessageDialog(MainFrame.this, "No Log In Info, please input info first",
+							"No log in info", JOptionPane.OK_OPTION);
+				} else if (controller.getCredentials().get(0) == "") {
+					System.out.println("deleted ip credentials");
+					JOptionPane.showMessageDialog(MainFrame.this, "No Log In Info, please input info first",
+							"No log in info", JOptionPane.OK_OPTION);
+				} else {
+					ipInfoDialog.setVisible(true);
+				}
+
 			}
 
 		});
