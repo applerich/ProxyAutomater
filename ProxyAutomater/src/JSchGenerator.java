@@ -1,4 +1,10 @@
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import com.jcraft.jsch.JSchException;
 
 import Controller.SSHManager;
 
@@ -33,7 +39,7 @@ public class JSchGenerator {
 	}
 
 	public void runScriptWithAuth(List<String> credentials, String assignmentScript, String squidScript,
-			List<String> authUserAndPass) {
+			List<String> authUserAndPass) throws JSchException, IOException  {
 		String connectionIP = credentials.get(0);
 		String userName = credentials.get(1);
 		String password = credentials.get(2);
@@ -63,10 +69,10 @@ public class JSchGenerator {
 
 			instance.sendCommand("> /etc/squid3/squid.conf");
 			instance.pasteText(squidScript, "/etc/squid3/", "squid.conf");
-
-			instance.sendCommand("sudo htpasswd -c /etc/squid3/passwords" + authUser);
-			instance.sendCommand(authPass);
-			instance.sendCommand(authPass);
+			instance.sendCommand("> /etc/squid3/passwords");
+			instance.sendPass("htpasswd -c /etc/squid3/passwords ",authUser, authPass);
+			
+			
 			instance.sendCommand("/etc/init.d/networking restart");
 			instance.sendCommand("/etc/init.d/squid3 restart");
 			instance.sendCommand("service squid3 restart");

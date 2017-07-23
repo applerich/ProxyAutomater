@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -12,6 +13,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import com.jcraft.jsch.JSchException;
 
 import Controller.Controller;
 
@@ -30,7 +33,6 @@ public class MainFrame extends JFrame {
 	private JSchGenerator jSchGenerator;
 	private HostOptionDialog hostOptionDialog;
 	private JButton hostChoose;
-	
 
 	public MainFrame() {
 		super("ProxyAutomater Tool");
@@ -132,54 +134,10 @@ public class MainFrame extends JFrame {
 		});
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(hostOptionDialog.getSelection() == null) {
+				if (hostOptionDialog.getSelection() == null) {
 					textPanel.appendText("\n");
 					textPanel.appendText("No host selected will use default" + "\n");
 					textPanel.appendText("\n");
-					/*try {
-					Thread.sleep(100000);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				List<String> credentials = controller.getCredentials();
-				if (credentials == null) { // no user log in
-					JOptionPane.showMessageDialog(MainFrame.this, "No log in input!", "No Log in Info",
-							JOptionPane.OK_OPTION);
-				}
-				String assignmentScript = controller.getAssignmentScript();
-				String squidScript = controller.getSquidScript();
-				List<String> authUserAndPass = controller.getUserandPass();
-
-				if (authUserAndPass.size() == 0) { // no auth
-					if (assignmentScript == null || squidScript == null) {
-						JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
-								JOptionPane.OK_OPTION);
-					} else { // with auth
-						// jSchGenerator.runScriptNoAuth(credentials,
-						// assignmentScript, squidScript);
-					}
-
-				} else if (authUserAndPass.size() != 0) { // with user auth
-					if (assignmentScript == null || squidScript == null) {
-						JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
-								JOptionPane.OK_OPTION);
-					} else {
-						// jSchGenerator.runScriptWithAuth(credentials,
-						// assignmentScript, squidScript, authUserAndPass);
-					}
-
-				} */
-				} else {
-					String selection = hostOptionDialog.getSelection();
-					if(selection.equals("host1plus")) {
-						textPanel.appendText("creating squid proxies for host1plus");
-						/*try {
-						Thread.sleep(100000);
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 					List<String> credentials = controller.getCredentials();
 					if (credentials == null) { // no user log in
 						JOptionPane.showMessageDialog(MainFrame.this, "No log in input!", "No Log in Info",
@@ -194,8 +152,7 @@ public class MainFrame extends JFrame {
 							JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
 									JOptionPane.OK_OPTION);
 						} else { // with auth
-							// jSchGenerator.runScriptNoAuth(credentials,
-							// assignmentScript, squidScript);
+							jSchGenerator.runScriptNoAuth(credentials, assignmentScript, squidScript);
 						}
 
 					} else if (authUserAndPass.size() != 0) { // with user auth
@@ -203,28 +160,110 @@ public class MainFrame extends JFrame {
 							JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
 									JOptionPane.OK_OPTION);
 						} else {
-							// jSchGenerator.runScriptWithAuth(credentials,
-							// assignmentScript, squidScript, authUserAndPass);
+							try {
+								jSchGenerator.runScriptWithAuth(credentials, assignmentScript, squidScript,
+										authUserAndPass);
+							} catch (JSchException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
 						}
 
-					} */
-					} else if(selection.equals("digitalocean")) {
-						textPanel.appendText("creating squid proxies for digital Ocean");
+					}
+				} else {
+					String selection = hostOptionDialog.getSelection();
+					if (selection.equals("host1plus")) {
+						textPanel.appendText("creating squid proxies for host1plus" + "\n");
+						List<String> credentials = controller.getCredentials();
+						if (credentials == null) { // no user log in
+							JOptionPane.showMessageDialog(MainFrame.this, "No log in input!", "No Log in Info",
+									JOptionPane.OK_OPTION);
+						}
+						String assignmentScript = controller.getAssignmentScript();
+						String squidScript = controller.getSquidScript();
+						List<String> authUserAndPass = controller.getUserandPass();
+
+						if (authUserAndPass.size() == 0) { // no auth
+							if (assignmentScript == null || squidScript == null) {
+								JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
+										JOptionPane.OK_OPTION);
+							} else { // with auth
+								jSchGenerator.runScriptNoAuth(credentials, assignmentScript, squidScript);
+							}
+
+						} else if (authUserAndPass.size() != 0) { // with
+																	// user
+																	// auth
+							if (assignmentScript == null || squidScript == null) {
+								JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
+										JOptionPane.OK_OPTION);
+							} else {
+								try {
+									jSchGenerator.runScriptWithAuth(credentials, assignmentScript, squidScript,
+											authUserAndPass);
+								} catch (JSchException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+							}
+
+						}
+					} else if (selection.equals("digitalocean")) {
+						textPanel.appendText("creating squid proxies for digital Ocean" + "\n");
+						textPanel.appendText("creating squid proxies for host1plus" + "\n");
+						List<String> credentials = controller.getCredentials();
+						if (credentials == null) { // no user log in
+							JOptionPane.showMessageDialog(MainFrame.this, "No log in input!", "No Log in Info",
+									JOptionPane.OK_OPTION);
+						}
+						String assignmentScript = controller.getAssignmentScript();
+						String squidScript = controller.getSquidScript();
+						List<String> authUserAndPass = controller.getUserandPass();
+
+						if (authUserAndPass.size() == 0) { // no auth
+							if (assignmentScript == null || squidScript == null) {
+								JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
+										JOptionPane.OK_OPTION);
+							} else { // with auth
+								jSchGenerator.runScriptNoAuth(credentials, assignmentScript, squidScript);
+							}
+
+						} else if (authUserAndPass.size() != 0) { // with
+																	// user
+																	// auth
+							if (assignmentScript == null || squidScript == null) {
+								JOptionPane.showMessageDialog(MainFrame.this, "No IPs was set up!", "No Ip set UP",
+										JOptionPane.OK_OPTION);
+							} else {
+								try {
+									jSchGenerator.runScriptWithAuth(credentials, assignmentScript, squidScript,
+											authUserAndPass);
+								} catch (JSchException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+							}
+						}
 					}
 				}
-				
-				
-
-			} 
+			}
 
 		});
 		hostChoose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hostOptionDialog.setVisible(true);
-				
-				
+
 			}
-			
+
 		});
 		hostOptionDialog.setHostListener(new HostListener() {
 			public void hostEventOccured(String host) {
@@ -295,7 +334,7 @@ public class MainFrame extends JFrame {
 		setGridBagLayout();
 		setJMenuBar(createMenuBar());
 		setSize(600, 600);
-		setMinimumSize(new Dimension(600,600));
+		setMinimumSize(new Dimension(600, 600));
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -373,7 +412,6 @@ public class MainFrame extends JFrame {
 		buttonPanel.add(listBtn);
 		buttonPanel.add(proxyBtn);
 		buttonPanel.add(cancelBtn);
-		
 
 		this.setLayout(new BorderLayout());
 		add(textAreaPanel, BorderLayout.CENTER);

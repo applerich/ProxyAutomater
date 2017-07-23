@@ -41,12 +41,7 @@ public class IpInfo {
 	public void ipAssignmentScript(List<String> list, String initialIp, String gateway, String netmask) {
 		int i = 1;
 		String finalCompiled = "";
-		String initial1 = "auto eth0" + "\n";
-		String initial2 = "iface eth0 inet static" + "\n";
-		String initial3 = "address " + initialIp + "\n";
-		String initial4 = "netmask " + netmask + "\n";
-		String initial5 = "gateway " + gateway + "\n";
-		finalCompiled = initial1 + initial2 + initial3 + initial4 + initial5 + "\n";
+		
 
 		for (String ip : list) {
 			String firstLine = "auto " + "eth0:" + i + "\n";
@@ -67,8 +62,7 @@ public class IpInfo {
 		String aclLine = "acl localnet src " + ip2 + "\n";
 		String allowLine = "http_access allow localhost" + "\n";
 		String allowLine2 = "http_access allow localnet" + "\n";
-		String allowLine3 = "http_access allow all" + "\n";
-		String introLine = portLine + aclLine + allowLine + allowLine2 + allowLine3 + "\n";
+		String introLine = portLine + aclLine + allowLine + allowLine2+ "\n";
 
 		for (String ip : list) {
 			String dotIp = ip;
